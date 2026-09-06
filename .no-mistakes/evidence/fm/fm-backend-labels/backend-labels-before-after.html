@@ -1,0 +1,122 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.css">
+<style>body{margin:0;background:#f6f8fa}.markdown-body pre,.markdown-body pre code{white-space:pre-wrap!important;word-break:break-word!important;overflow-wrap:anywhere}.markdown-body{box-sizing:border-box;max-width:1100px;margin:24px auto;padding:40px;background:#fff;border:1px solid #d0d7de;border-radius:8px}</style>
+</head><body><article class="markdown-body"><h1 dir="auto">Runtime-backend maturity labels — before and after</h1>
+<p dir="auto">Every changed line, rendered through GitHub's own Markdown renderer: the surface readers and agent sessions actually see.</p>
+<h2 dir="auto"><code class="notranslate">AGENTS.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<pre class="notranslate"><code class="notranslate">config/backend  runtime session-provider backend override for new tasks; LOCAL, gitignored; absent = falls through to runtime auto-detection (the runtime firstmate itself is executing inside), then tmux; tmux is the verified reference backend (docs/tmux-backend.md), while herdr, zellij, orca, and cmux are experimental spawn backends (docs/herdr-backend.md, docs/zellij-backend.md, docs/orca-backend.md, docs/cmux-backend.md) - herdr and cmux can also be selected by runtime auto-detection, zellij and orca never are (always explicit), and codex-app is not accepted; see docs/codex-app-backend.md; inherited by secondmate homes under the primary-authoritative contract in secondmate-provisioning
+</code></pre>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<pre class="notranslate"><code class="notranslate">config/backend  runtime session-provider backend override for new tasks; LOCAL, gitignored; absent = falls through to runtime auto-detection (the runtime firstmate itself is executing inside), then tmux; tmux is the verified reference backend (docs/tmux-backend.md), herdr has its own required CI lane (docs/herdr-backend.md), while zellij, orca, and cmux remain experimental with no dedicated real-backend CI lane (docs/zellij-backend.md, docs/orca-backend.md, docs/cmux-backend.md) - herdr and cmux can also be selected by runtime auto-detection, zellij and orca never are (always explicit), and codex-app is not accepted; see docs/codex-app-backend.md; inherited by secondmate homes under the primary-authoritative contract in secondmate-provisioning
+</code></pre>
+<hr>
+<h2 dir="auto"><code class="notranslate">CONTRIBUTING.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<p dir="auto">A local <code class="notranslate">config/backend</code> file explicitly overrides runtime auto-detection for new task endpoints and stays gitignored; spawn-supported values are <code class="notranslate">tmux</code> plus experimental <code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">orca</code>, and <code class="notranslate">cmux</code>, while <code class="notranslate">codex-app</code> is documented only in <code class="notranslate">docs/codex-app-backend.md</code>.</p>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<p dir="auto">A local <code class="notranslate">config/backend</code> file explicitly overrides runtime auto-detection for new task endpoints and stays gitignored; spawn-supported values are <code class="notranslate">tmux</code>, <code class="notranslate">herdr</code> (which has its own required CI lane), and <code class="notranslate">zellij</code>, <code class="notranslate">orca</code>, and <code class="notranslate">cmux</code>, which remain experimental with no dedicated real-backend CI lane, while <code class="notranslate">codex-app</code> is documented only in <code class="notranslate">docs/codex-app-backend.md</code>.</p>
+<hr>
+<h2 dir="auto"><code class="notranslate">README.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<ul dir="auto">
+<li><strong>A visible crew</strong> - every crewmate works in its own tmux window, experimental herdr/zellij tab, cmux workspace, or Orca terminal you can watch or type into; the first mate reconciles.</li>
+<li><a href="docs/herdr-backend.md">docs/herdr-backend.md</a> - current setup, safety boundaries, and limits for the experimental Herdr backend.</li>
+</ul>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<ul dir="auto">
+<li><strong>A visible crew</strong> - every crewmate works in its own tmux window, Herdr tab, or experimental zellij tab, cmux workspace, or Orca terminal you can watch or type into; the first mate reconciles.</li>
+<li><a href="docs/herdr-backend.md">docs/herdr-backend.md</a> - current setup, CI coverage, safety boundaries, and limits for the Herdr backend.</li>
+</ul>
+<hr>
+<h2 dir="auto"><code class="notranslate">docs/architecture.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<p dir="auto"><code class="notranslate">bin/fm-backend.sh</code> centralizes backend selection, <code class="notranslate">state/&lt;id&gt;.meta</code> helpers, metadata-only cleanup identity validation, selector resolution, and operation dispatch; <code class="notranslate">bin/backends/tmux.sh</code> is the verified reference adapter (<a href="tmux-backend.md"><code class="notranslate">docs/tmux-backend.md</code></a>), and <code class="notranslate">bin/backends/herdr.sh</code> (P2), <code class="notranslate">bin/backends/zellij.sh</code> (P3), <code class="notranslate">bin/backends/orca.sh</code> (P4), and <code class="notranslate">bin/backends/cmux.sh</code> (P5) are experimental task-spawn adapters.<br>
+Herdr is experimental and can be selected explicitly or by runtime auto-detection: Treehouse remains its worktree provider, <a href="herdr-backend.md"><code class="notranslate">herdr-backend.md</code></a> owns current setup and safety limits, and <a href="verification/runtime-backends.md#herdr"><code class="notranslate">verification/runtime-backends.md</code></a> owns active empirical evidence.</p>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<p dir="auto"><code class="notranslate">bin/fm-backend.sh</code> centralizes backend selection, <code class="notranslate">state/&lt;id&gt;.meta</code> helpers, metadata-only cleanup identity validation, selector resolution, and operation dispatch; <code class="notranslate">bin/backends/tmux.sh</code> is the verified reference adapter (<a href="tmux-backend.md"><code class="notranslate">docs/tmux-backend.md</code></a>), <code class="notranslate">bin/backends/herdr.sh</code> (P2) has its own required CI lane (<a href="herdr-backend.md"><code class="notranslate">docs/herdr-backend.md</code></a>), and <code class="notranslate">bin/backends/zellij.sh</code> (P3), <code class="notranslate">bin/backends/orca.sh</code> (P4), and <code class="notranslate">bin/backends/cmux.sh</code> (P5) remain experimental task-spawn adapters with no dedicated real-backend CI lane.<br>
+Herdr can be selected explicitly or by runtime auto-detection: Treehouse remains its worktree provider, <a href="herdr-backend.md"><code class="notranslate">herdr-backend.md</code></a> owns current setup, CI coverage, and safety limits, and <a href="verification/runtime-backends.md#herdr"><code class="notranslate">verification/runtime-backends.md</code></a> owns active empirical evidence.</p>
+<hr>
+<h2 dir="auto"><code class="notranslate">docs/configuration.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<p dir="auto"><code class="notranslate">tmux</code> is the verified reference backend (see <a href="tmux-backend.md"><code class="notranslate">docs/tmux-backend.md</code></a>); <code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">orca</code>, and <code class="notranslate">cmux</code> are experimental spawn backends (see <a href="herdr-backend.md"><code class="notranslate">docs/herdr-backend.md</code></a>, <a href="zellij-backend.md"><code class="notranslate">docs/zellij-backend.md</code></a>, <a href="orca-backend.md"><code class="notranslate">docs/orca-backend.md</code></a>, and <a href="cmux-backend.md"><code class="notranslate">docs/cmux-backend.md</code></a>).<br>
+That delta is owned in code by <code class="notranslate">fm_backend_required_tools</code> in <code class="notranslate">bin/fm-backend.sh</code>: the resolved backend's own session-provider CLI (<code class="notranslate">tmux</code>, <code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">orca</code>, or <code class="notranslate">cmux</code>), <code class="notranslate">jq</code> for the JSON-emitting experimental adapters (<code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">cmux</code>) whose spawn and liveness paths parse the backend's JSON output, and the <code class="notranslate">treehouse</code> worktree provider for every session-provider-only backend (<code class="notranslate">tmux</code>, <code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">cmux</code>).</p>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<p dir="auto"><code class="notranslate">tmux</code> is the verified reference backend (see <a href="tmux-backend.md"><code class="notranslate">docs/tmux-backend.md</code></a>); <code class="notranslate">herdr</code> has its own required CI lane (see <a href="herdr-backend.md"><code class="notranslate">docs/herdr-backend.md</code></a>); <code class="notranslate">zellij</code>, <code class="notranslate">orca</code>, and <code class="notranslate">cmux</code> remain experimental spawn backends with no dedicated real-backend CI lane (see <a href="zellij-backend.md"><code class="notranslate">docs/zellij-backend.md</code></a>, <a href="orca-backend.md"><code class="notranslate">docs/orca-backend.md</code></a>, and <a href="cmux-backend.md"><code class="notranslate">docs/cmux-backend.md</code></a>).<br>
+That delta is owned in code by <code class="notranslate">fm_backend_required_tools</code> in <code class="notranslate">bin/fm-backend.sh</code>: the resolved backend's own session-provider CLI (<code class="notranslate">tmux</code>, <code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">orca</code>, or <code class="notranslate">cmux</code>), <code class="notranslate">jq</code> for the JSON-emitting adapters (<code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">cmux</code>) whose spawn and liveness paths parse the backend's JSON output, and the <code class="notranslate">treehouse</code> worktree provider for every session-provider-only backend (<code class="notranslate">tmux</code>, <code class="notranslate">herdr</code>, <code class="notranslate">zellij</code>, <code class="notranslate">cmux</code>).</p>
+<hr>
+<h2 dir="auto"><code class="notranslate">docs/herdr-backend.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<p dir="auto">Herdr is an experimental agent-native terminal backend with native per-pane agent state and push events.<br>
+Pick Herdr when you want native busy, idle, and blocked state and accept the experimental limits below.</p>
+<ul dir="auto">
+<li>Herdr remains experimental.</li>
+</ul>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<p dir="auto">Herdr is an agent-native terminal backend with native per-pane agent state and push events.<br>
+Pick Herdr when you want native busy, idle, and blocked state and accept the active limits below.</p>
+<hr>
+<h2 dir="auto"><code class="notranslate">docs/scripts.md</code></h2>
+<p dir="auto"><strong>Before</strong> — base <code class="notranslate">a913539</code></p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Script</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">backends/tmux.sh</code></td>
+<td>Verified tmux session-provider adapter</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/herdr.sh</code></td>
+<td>Experimental herdr session-provider adapter</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/zellij.sh</code></td>
+<td>Experimental zellij session-provider adapter</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/orca.sh</code></td>
+<td>Experimental Orca backend adapter owning both worktree and terminal</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/cmux.sh</code></td>
+<td>Experimental cmux session-provider adapter</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p dir="auto"><strong>After</strong> — this branch</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Script</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">backends/tmux.sh</code></td>
+<td>Verified tmux session-provider adapter</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/herdr.sh</code></td>
+<td>Herdr session-provider adapter with its own required CI lane</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/zellij.sh</code></td>
+<td>Experimental zellij session-provider adapter</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/orca.sh</code></td>
+<td>Experimental Orca backend adapter owning both worktree and terminal</td>
+</tr>
+<tr>
+<td><code class="notranslate">backends/cmux.sh</code></td>
+<td>Experimental cmux session-provider adapter</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr></article></body></html>

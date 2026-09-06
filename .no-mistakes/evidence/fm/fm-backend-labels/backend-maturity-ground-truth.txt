@@ -1,0 +1,56 @@
+== Backend-specific test files under tests/ (ground truth inventory) ==
+  herdr   19 test files
+  tmux     3 test files
+  zellij   2 test files
+  cmux     3 test files
+  orca     1 test files
+
+  herdr test files:
+    fm-afk-inject-herdr-e2e.test.sh
+    fm-afk-pi-herdr-return-e2e.test.sh
+    fm-backend-herdr-eventwait-smoke.test.sh
+    fm-backend-herdr-eventwait.test.py
+    fm-backend-herdr-focus-flash-e2e.test.sh
+    fm-backend-herdr-launcher-workspace-e2e.test.sh
+    fm-backend-herdr-presentation-e2e.test.sh
+    fm-backend-herdr-prune-safety-e2e.test.sh
+    fm-backend-herdr-respawn-idem-e2e.test.sh
+    fm-backend-herdr-smoke.test.sh
+    fm-backend-herdr-workspace-per-home-e2e.test.sh
+    fm-backend-herdr.test.sh
+    fm-control-herdr-smoke.test.sh
+    fm-herdr-lab.test.sh
+    fm-herdr-session-cleanup-e2e.test.sh
+    fm-herdr-session-cleanup.test.sh
+    fm-herdr-submit-confirm-live-e2e.test.sh
+    fm-herdr-version-floor-live-e2e.test.sh
+    fm-send-secondmate-marker-herdr-e2e.test.sh
+
+== CI jobs as GitHub itself parsed and ran ci.yml (run 34045932909, all green) ==
+  success  Behavior portable parallel 1
+  success  Stock macOS Bash snapshot compatibility
+  success  Lint
+  success  Behavior portable parallel 2
+  success  Behavior portable serial 4
+  success  Test coverage guard
+  success  Behavior tests (Herdr)
+  success  Behavior portable serial 1
+  success  Repo invariants
+  success  Behavior portable serial 5
+  success  Behavior portable serial 2
+  success  Behavior portable serial 3
+  success  Behavior timing aggregate
+  -> one backend-specific lane exists: Behavior tests (Herdr).
+  -> no dedicated real-backend lane for tmux, zellij, orca, or cmux.
+  -> ci.yml names that job block "Required real-Herdr lane: pinned install, ... hard-fail on skip: herdr not found".
+
+== Every remaining Markdown line containing both "experimental" and "herdr" ==
+   (each must be a sentence where experimental applies to zellij/orca/cmux, never to Herdr)
+AGENTS.md:75:config/backend  runtime session-provider backend override for new tasks; LOCAL, gitignored; absent = falls through to runtime auto-detection (the runtime firstmate itself is executing inside), then tmux; tmux is the verified reference backend (docs/tmux-backend.md), herdr has its own required CI lane (docs/herdr-backend.md), while zellij, orca, and cmux remain experimental with no ded
+CONTRIBUTING.md:44:  A local `config/backend` file explicitly overrides runtime auto-detection for new task endpoints and stays gitignored; spawn-supported values are `tmux`, `herdr` (which has its own required CI lane), and `zellij`, `orca`, and `cmux`, which remain experimental with no dedicated real-backend CI lane, while `codex-app` is documented only in `docs/codex-app-backend.md`.
+README.md:45:- **A visible crew** - every crewmate works in its own tmux window, Herdr tab, or experimental zellij tab, cmux workspace, or Orca terminal you can watch or type into; the first mate reconciles.
+docs/architecture.md:180:`bin/fm-backend.sh` centralizes backend selection, `state/<id>.meta` helpers, metadata-only cleanup identity validation, selector resolution, and operation dispatch; `bin/backends/tmux.sh` is the verified reference adapter ([`docs/tmux-backend.md`](tmux-backend.md)), `bin/backends/herdr.sh` (P2) has its own required CI lane ([`docs/herdr-backend.md`](herdr-backend.md)), an
+docs/configuration.md:115:`tmux` is the verified reference backend (see [`docs/tmux-backend.md`](tmux-backend.md)); `herdr` has its own required CI lane (see [`docs/herdr-backend.md`](herdr-backend.md)); `zellij`, `orca`, and `cmux` remain experimental spawn backends with no dedicated real-backend CI lane (see [`docs/zellij-backend.md`](zellij-backend.md), [`docs/orca-backend.md`](orca-backend.md)
+
+== Runtime notice deliberately left unchanged this round (disclosed in PR body, not fixed) ==
+  bin/fm-backend.sh:263:      echo "NOTICE: auto-detected herdr runtime (HERDR_ENV=1) - spawning into the EXPERIMENTAL herdr backend. Set config/backend or pass --backend tmux to opt out." >&2
