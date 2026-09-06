@@ -1,0 +1,42 @@
+The unrelated process holding the home (ChatGPT desktop app's background Codex app-server):
+  pid 43403  /tmp/fmlock.B46xma/fakeapp/Applications/ChatGPT.app/Contents/Resources/codex -c sleep 900; :
+
+The home's lock file names that bare pid, and nothing else:
+  $ cat state/.lock  ->  43403
+
+################ BEFORE (base 29015a2) ################
+$ fm-lock.sh
+error: another live firstmate session holds the lock (pid 43403); operate read-only until resolved
+  exit=1
+$ fm-lock.sh status
+lock: held by live harness pid 43403
+
+The session is read-only. The operator is told a firstmate session holds
+the home, is given a bare number, and closing the ChatGPT window changes
+nothing because the daemon keeps running.
+
+################ AFTER (fix 5b6e9ea) ################
+$ fm-lock.sh
+error: the session lock names live harness pid 43403 (/tmp/fmlock.B46xma/fakeapp/Applications/ChatGPT.app/Contents/Resources/codex -c sleep 900; :), which this home cannot confirm is a firstmate session here; firstmate will not take a home from a process it cannot prove is dead, so it keeps the lock. Two ways out: quit that process, or remove the stale lock file /tmp/fmlock.B46xma/demohome/state/.lock. If it IS this home's session it keeps the home and repairs its own record. Operate read-only until resolved
+  exit=1
+$ fm-lock.sh status
+lock: unconfirmed (pid 43403 (/tmp/fmlock.B46xma/fakeapp/Applications/ChatGPT.app/Contents/Resources/codex -c sleep 900; :) is a live harness process this home cannot confirm is a firstmate session here); firstmate will not take the home from a process it cannot prove is dead, so it is held, not reclaimed - quit that process, or remove /tmp/fmlock.B46xma/demohome/state/.lock
+$ cat state/.lock   # the holder is refused, never evicted
+  43403
+
+--- the operator takes the second remedy the message names ---
+$ rm state/.lock && fm-lock.sh
+lock acquired: harness pid 36165
+  exit=0
+
+################ AFTER: pid reuse after a reboot ################
+The home DOES hold a record for this exact pid, written when a real
+session acquired here; the process at that pid is now something else.
+$ fm-lock.sh status
+lock: stale (pid 43403 was recycled and now belongs to an unrelated process (/tmp/fmlock.B46xma/fakeapp/Applications/ChatGPT.app/Contents/Resources/codex -c sleep 900; :)); the next session start reclaims it
+$ fm-lock.sh
+note: reclaimed the session lock from pid 43403 (/tmp/fmlock.B46xma/fakeapp/Applications/ChatGPT.app/Contents/Resources/codex -c sleep 900; :): that pid was recycled and now belongs to an unrelated process.
+lock acquired: harness pid 36165
+  exit=0
+$ cat state/.lock   # home recovered with no operator step
+  36165
